@@ -1,11 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+import Web3Provider from "./contexts/Web3Provider";
+import { ThemeProvider } from "@mui/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+let theme = createTheme();
+theme = responsiveFontSizes(theme);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Web3Provider>
+        <ThemeProvider theme={theme}>
+          <App />{" "}
+        </ThemeProvider>
+      </Web3Provider>
+    </BrowserRouter>
   </React.StrictMode>
 );

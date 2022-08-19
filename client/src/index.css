@@ -1,14 +1,28 @@
-html {
-  font-size: 10px;
-  font-family: sans-serif;
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+
+.buttona:active{
+  background-color: rgb(165, 227, 165);
+}
+.buttond:active{
+  background-color: rgb(225, 172, 172);
 }
 
-* {
-  margin: 0;
-  padding: 0;
+.h-tweet{
+  height: 500px;
 }
 
-#root {
-  width: 100vw;
-  height: 100vh;
+.h-part{
+  height: 400px;
+}
+
+#tweetCard::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  display: none;
 }
