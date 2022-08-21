@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const axios = require('axios').default;
 const rwClient = require('./twitterClient');
+const tweetData = require('./model/tweetData')
 
 dotenv.config();
 
@@ -52,15 +53,22 @@ const params = {
 
 const tweet = async()=>{
     try {
-       // console.log("Asigala")
+        //console.log("Asigala")
         if(since_id){
             params.since_id = since_id;
         }
         const jsTweets = await rwClient.v2.search('blocknewsv1', params);
         if(jsTweets){
             for await (const tweet of jsTweets) {
-                //console.log(tweet);
-                setData(tweet);
+                //console.log(tweet.id)
+                const dup = await tweetData.find({id:tweet.id})
+                //console.log(dup,"This is dup array",typeof dup);
+                // Object.keys(myArray).length
+                if(!dup.length){
+                    setData(tweet);
+                }
+               
+                
             }
             since_id = jsTweets.meta.newest_id;
         }
@@ -81,7 +89,7 @@ const setData = async(tweet)=>{
         // var time = new Date(tweet.created_at);
         // tweet.timer = time.setMinutes(time.getMinutes()+20);
         // console.log(tweet);
-        const response = await axios.post("http://localhost:5000/post", tweet);
+        const response = await axios.post("https://protected-dusk-02862.herokuapp.com/post", tweet);
         console.log(response.status);
     } catch(e){
         console.error(e);

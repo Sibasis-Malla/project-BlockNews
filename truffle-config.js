@@ -23,10 +23,11 @@ module.exports = {
    
     matic:{
       networkCheckTimeout: 10000,
-      provider: () => new HDWalletProvider(`${key}`,`wss://polygon-mumbai.g.alchemy.com/v2/7rNJvX5DIN05HZ4rKrMFx82WziMSAHe3`),
+      provider: () => new HDWalletProvider(`${key}`,`wss://polygon-mumbai.g.alchemy.com/v2/BNLEUK85VPivtGDAWmqdZWFILkGQbv5h`),
       network_id:  80001,     
-     // gas: 20000000,        
-      confirmations: 2,    
+      //gas: 20000000,
+      gasPrice:100000000000,        
+      confirmations: 1,    
       timeoutBlocks: 200, 
       skipDryRun: true     
 

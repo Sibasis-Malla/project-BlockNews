@@ -28,7 +28,7 @@ function TweetVote() {
   console.log(tweetData);
   return (
     <>
-      <div className="mb-24">
+      <div>
         <div
           id="timer"
           className="flex justify-center items-center mt-2 h-1/6 w-full"
@@ -36,7 +36,7 @@ function TweetVote() {
           <Timer />
         </div>
         <div className="w-full bg-primary mt-10 flex flex-row justify-around">
-          <div className="p-4 h-card w-full max-w-xl bg-cardcol rounded-lg border shadow-md rounded-lg sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-4 h-card w-full max-w-xl bg-cardcol mb-24 rounded-lg border shadow-md rounded-lg sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
             <h5 className="text-xl text-white font-medium dark:text-white">
               Tweet ID : {tweetid}
             </h5>
