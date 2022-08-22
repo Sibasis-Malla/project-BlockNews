@@ -1,19 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
+import { articlesData,getRoomParticipants,getVerdict,getParticipantsStake,getStatus,getTime } from '../contexts/useContracts/readContract';
+import { voteFor,voteAgainst } from '../contexts/useContracts/writeContract';
+
+import Web3Context from '../contexts';
 
 function TweetVote() {
   const { tweetid } = useParams();
-  console.log(tweetid);
+  //console.log(tweetid);
+  const { Contract, account } = useContext(Web3Context);
   const [tweetData, settweetData] = useState({});
   const [done, setDone] = useState(true);
+  const [stake,setStake] = useState(0);
+  useEffect(()=>{
+    console.log(getStatus(Contract,tweetid))
+    console.log(getTime(Contract,tweetid))
+  },[Contract,account])
+  
+  
+  const handleAgree = async(event) => {
+    event.preventDefault();
+    await voteFor(Contract,account,tweetid,stake)
+    alert("Voting Successful")
+  };
+  const handleDisAgree = async(event) => {
+    event.preventDefault();
+    await voteAgainst(Contract,account,tweetid,stake)
+    alert("Voting Successful")
+  };
+  const handleStake= (e) => {
+    setStake(() => ([e.target.name] = e.target.value));
+  };
   const getTweet = async () => {
     try {
       await axios
         .get(`https://protected-dusk-02862.herokuapp.com/get/${tweetid}`)
         .then((res) => {
-          console.log(res.data);
+          //console.log(res.data);
           settweetData(res.data[0]);
         });
     } catch (e) {
@@ -25,7 +50,7 @@ function TweetVote() {
     getTweet();
     // eslint-disable-next-line
   }, []);
-  console.log(tweetData);
+  //console.log(tweetData);
   return (
     <>
       <div>
@@ -45,23 +70,26 @@ function TweetVote() {
               <div>
                 <input
                   type="price"
-                  name="price"
+                  name="stake"
                   id="price"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="Stack Amount"
+                  placeholder="Stake Amount"
                   required=""
+                  onChange={handleStake}
                 />
               </div>
               <div className="flex flex-row justify-center align-center">
                 <button
                   type="submit"
                   className="w-full mr-2 text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onSubmit={handleAgree}
                 >
                   Agree
                 </button>
                 <button
                   type="submit"
                   className="w-full ml-2 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onSubmit={handleDisAgree}
                 >
                   Diagree
                 </button>

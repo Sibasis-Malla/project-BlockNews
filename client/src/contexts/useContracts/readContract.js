@@ -61,6 +61,13 @@
     const res = await contract.methods.getParticipantsVote(id, address).call();
     return res;
   };
+  const getTime = async(contract,id)=> {
+    if (!contract) {
+        return false;
+      }
+    const res = await contract.methods.getTime(id).call();
+    return res;
+  };
 
 
 
@@ -71,5 +78,6 @@ export {
     getStatus,
     getRoomParticipants,
     getParticipantsStake,
-    articlesData
+    articlesData,
+    getTime
   };
