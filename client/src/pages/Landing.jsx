@@ -1,3 +1,4 @@
+ // eslint-disable
 import React, { useEffect, useState, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import WideCards from '../components/Cards/WideCards';
@@ -84,6 +85,7 @@ const LandingPage = () => {
               
                return (
                 tweet.status==2 && <WideCards
+                key={tweet.id}
                   id={tweet.id}
                   // username={tweet.username}
                   // name={tweet.user}
@@ -104,6 +106,7 @@ const LandingPage = () => {
             articles.map((tweet) => {
               return (
                 (tweet.status==0 || tweet.status==1) &&<WideCards
+                key={tweet.id}
                   id={tweet.id}
                   // username={tweet.username}
                   // name={tweet.user}
@@ -122,6 +125,7 @@ const LandingPage = () => {
             return (
               <div>
                 <WideCardsMod
+                 key={tweet.id}
                   id={tweet.id}
                   username={tweet.username}
                   name={tweet.user}

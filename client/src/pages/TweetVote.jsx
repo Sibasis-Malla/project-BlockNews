@@ -46,7 +46,7 @@ function TweetVote() {
     //console.log(getStatus(Contract, tweetid));
     try {
       getTime(Contract, tweetid).then((res) => {
-        var minutesToAdd = 5;
+        var minutesToAdd = 15;
         var currentDate = new Date(res * 1000);
         setTime(currentDate.getTime() + minutesToAdd * 60000);
       });
@@ -163,19 +163,23 @@ function TweetVote() {
                       </div>
                     </>
                   ) : (
+                    <div className="flex justify-center items-center flex-col">
                     <button
-                      class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+                      className=" bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
                       onClick={handleParticipate}
                     >
                       Participate
                     </button>
+                    </div>
                   )}
                 </>
               ) : (
                 <>
-                Voting Ended
-                <div>
-                  This is news is Voted to be {verdict?(<>True</>):(<>Fake</>)}
+                <div className="flex justify-center items-center flex-col">
+                  <h2 className="text-white">Voting Ended!</h2>
+                  <div className="text-white">
+                    <h2>This is news is Voted to be {verdict?(<a className="text-green-500 text-bold">True</a>):(<a className="text-red-500">Fake</a>)}.</h2>
+                  </div>
                 </div>
                 </>
               )}
@@ -320,7 +324,7 @@ function Person(props) {
           </p>
         </div>
         <div class="inline-flex items-center text-base font-semibold text-white">
-          {stake && Web3.utils.fromWei(String(stake), "ether")} ETH
+          {stake && Web3.utils.fromWei(String(stake), "ether")} Matic
         </div>
         {(status == 2 || status == 1) && (
           <div class="inline-flex items-center text-base font-semibold text-white">
