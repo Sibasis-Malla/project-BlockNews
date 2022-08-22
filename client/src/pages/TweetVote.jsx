@@ -178,7 +178,7 @@ function TweetVote() {
                 <div className="flex justify-center items-center flex-col">
                   <h2 className="text-white">Voting Ended!</h2>
                   <div className="text-white">
-                    <h2>This is news is Voted to be {!verdict?(<a className="text-green-500 text-bold">True</a>):(<a className="text-red-500">Fake</a>)}.</h2>
+                    <h2>This is news is Voted to be {verdict?(<a className="text-green-500 text-bold">True</a>):(<a className="text-red-500">Fake</a>)}.</h2>
                   </div>
                 </div>
                 </>
