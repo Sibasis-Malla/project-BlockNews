@@ -328,7 +328,7 @@ function Person(props) {
         </div>
         {(status == 2 || status == 1) && (
           <div class="inline-flex items-center text-base font-semibold text-white">
-            {vote ? <>For</> : <>Against</>}
+            {vote ? <span class="text-green-500">Favour</span> : <span class="text-red-500">Against</span>}
           </div>
         )}
       </div>
