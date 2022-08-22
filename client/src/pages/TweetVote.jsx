@@ -1,9 +1,18 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { TwitterTweetEmbed } from 'react-twitter-embed';
-import { articlesData,getRoomParticipants,getVerdict,getParticipantsStake,getStatus,getTime } from '../contexts/useContracts/readContract';
-import { voteFor,voteAgainst } from '../contexts/useContracts/writeContract';
+import {
+  articlesData,
+  getRoomParticipants,
+  getVerdict,
+  getParticipantsStake,
+  getStatus,
+  getTime,
+} from '../contexts/useContracts/readContract';
+import { voteFor, voteAgainst } from '../contexts/useContracts/writeContract';
+
+import timedifference from '../components/timedifference';
 
 import Web3Context from '../contexts';
 
@@ -13,24 +22,33 @@ function TweetVote() {
   const { Contract, account } = useContext(Web3Context);
   const [tweetData, settweetData] = useState({});
   const [done, setDone] = useState(true);
-  const [stake,setStake] = useState(0);
-  useEffect(()=>{
-    console.log(getStatus(Contract,tweetid))
-    console.log(getTime(Contract,tweetid))
-  },[Contract,account])
-  
-  
-  const handleAgree = async(event) => {
+  const [stake, setStake] = useState(0);
+  const [time, setTime] = useState(0);
+
+  useEffect(() => {
+    console.log(getStatus(Contract, tweetid));
+    try {
+      getTime(Contract, tweetid).then((res) => {
+        var minutesToAdd = 10;
+        var currentDate = new Date(res*1000);
+        setTime(currentDate.getTime() + minutesToAdd * 60000);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [Contract, account]);
+
+  const handleAgree = async (event) => {
     event.preventDefault();
-    await voteFor(Contract,account,tweetid,stake)
-    alert("Voting Successful")
+    await voteFor(Contract, account, tweetid, stake);
+    alert('Voting Successful');
   };
-  const handleDisAgree = async(event) => {
+  const handleDisAgree = async (event) => {
     event.preventDefault();
-    await voteAgainst(Contract,account,tweetid,stake)
-    alert("Voting Successful")
+    await voteAgainst(Contract, account, tweetid, stake);
+    alert('Voting Successful');
   };
-  const handleStake= (e) => {
+  const handleStake = (e) => {
     setStake(() => ([e.target.name] = e.target.value));
   };
   const getTweet = async () => {
@@ -58,7 +76,7 @@ function TweetVote() {
           id="timer"
           className="flex justify-center items-center mt-2 h-1/6 w-full"
         >
-          <Timer />
+          <Timer time={time} />
         </div>
         <div className="w-full bg-primary mt-10 flex flex-row justify-around">
           <div className="p-4 h-card w-full max-w-xl bg-cardcol mb-24 rounded-lg border shadow-md rounded-lg sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -136,34 +154,31 @@ function TweetDecision({ tweetid }) {
   );
 }
 
-function Timer(params) {
+function Timer({ time }) {
   // console.log(params.time);
-  const [sec, setsec] = useState('00');
-  const [min, setmin] = useState('00');
-  const [hr, sethr] = useState('00');
-  var countdown = new Date(params.time).getTime();
-  setInterval(() => {
-    var curr = new Date().getTime();
-    var timeleft = countdown - curr;
-    sethr(Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-    setmin(Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60)));
-    setsec(Math.floor((timeleft % (1000 * 60)) / 1000));
-  }, 1000);
-
+  const [timeLeft, setTimeLeft] = useState(timedifference(time));
+  useEffect(() => {
+    setTimeout(() => {
+      setTimeLeft(timedifference(time));
+    }, 1000);
+  });
   return (
     <div className="flex flex-row w-full justify-end items-center mr-40">
+      {
+
+      }
       <p className="text-white">Time left: </p>
       <div className="bg-timer ml-1 w-1/6 h-2/3 flex justify-around items-center rounded-md">
         <div className="flex">
-          {hr}
+          {timeLeft['Hours']}
           <p>H</p>
         </div>
         <div className="flex ">
-          {min}
+          {timeLeft['Minutes']}
           <p>M</p>
         </div>
         <div className="flex ">
-          {sec}
+          {timeLeft['Seconds']}
           <p>S</p>
         </div>
       </div>
