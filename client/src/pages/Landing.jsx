@@ -2,9 +2,10 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import WideCards from '../components/Cards/WideCards';
 import WideCardsMod from '../components/Cards/WideCardsMod';
+
 import Web3Context from '../contexts';
 import axios from 'axios';
-import { articlesData } from '../contexts/useContracts/readContract';
+import { articlesData} from '../contexts/useContracts/readContract';
 import { intializeArticle} from '../contexts/useContracts/writeContract';
 
 const LandingPage = () => {
@@ -22,6 +23,7 @@ const LandingPage = () => {
       setarticles(res);
     });
   };
+
 
   const [tweetData, settweetData] = useState([]);
   const [recenttweet, setrecenttweet] = useState([]);
@@ -72,7 +74,28 @@ const LandingPage = () => {
 
         {articles && (
           <h1 className="text-center font-bold pl-10 mb-10 text-3xl my-2 text-textcol">
-            Voting about to end{' '}
+            Voting Ended{' '}
+          </h1>
+        )}
+
+        <div className="grid grid-cols-3 gap-5">
+          {articles &&
+            articles.map((tweet) => {
+              
+               return (
+                tweet.status==2 && <WideCards
+                  id={tweet.id}
+                  // username={tweet.username}
+                  // name={tweet.user}
+                  // text={tweet.text}
+                  // time={`${new Date(tweet.timer).getDate()} ${new Date(tweet.timer).toLocaleDateString('default', {month: 'long'})} ${new Date(tweet.timer).getFullYear()}`}
+                />
+              );
+            })}
+        </div>
+        {articles && (
+          <h1 className="text-center font-bold pl-10 mb-10 text-3xl my-2 text-textcol">
+            Voting Ongoing{' '}
           </h1>
         )}
 
@@ -80,7 +103,7 @@ const LandingPage = () => {
           {articles &&
             articles.map((tweet) => {
               return (
-                <WideCards
+                (tweet.status==0 || tweet.status==1) &&<WideCards
                   id={tweet.id}
                   // username={tweet.username}
                   // name={tweet.user}

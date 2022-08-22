@@ -6,13 +6,17 @@ const WideCards = (params) => {
   const approve = async () => {
     console.log(params.contract);
     console.log(params.account);
-    params.approve(params.contract, params.account, params.id, params.text);
+    await params.approve(params.contract, params.account, params.id, params.text);
+ 
     try {
       const response = await axios.put(
         `https://protected-dusk-02862.herokuapp.com/approve/${params.id}`
       );
       console.log(response.status, response.message);
     } catch (e) {}
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
   };
   //const url = `https://twitframe.com/show?url=https%3A%2F%2Ftwitter.com%2Ftwito%2Fstatus%2F${params.id}`;
   return (

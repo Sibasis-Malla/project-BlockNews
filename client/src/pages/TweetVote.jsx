@@ -9,13 +9,14 @@ import {
   getParticipantsStake,
   getStatus,
   getTime,
+  getParticipantsVote,
 } from "../contexts/useContracts/readContract";
 import {
   voteFor,
   voteAgainst,
   participate,
 } from "../contexts/useContracts/writeContract";
-
+import Web3 from "web3";
 import timedifference from "../components/timedifference";
 
 import Web3Context from "../contexts";
@@ -29,10 +30,12 @@ function TweetVote() {
   const [done, setDone] = useState(true);
   const [stake, setStake] = useState(0);
   const [time, setTime] = useState(0);
+  const [status, setStatus] = useState(0);
+  const [verdict, setVerdict] = useState(true);
   useEffect(() => {
     try {
       getRoomParticipants(Contract, tweetid).then((res) => {
-        console.log(res);
+        //console.log(res);
         setParticipant(res);
       });
     } catch (err) {
@@ -40,41 +43,53 @@ function TweetVote() {
     }
   }, [Contract, account]);
   useEffect(() => {
-    console.log(getStatus(Contract, tweetid));
+    //console.log(getStatus(Contract, tweetid));
     try {
       getTime(Contract, tweetid).then((res) => {
-        var minutesToAdd = 10;
+        var minutesToAdd = 5;
         var currentDate = new Date(res * 1000);
         setTime(currentDate.getTime() + minutesToAdd * 60000);
       });
+      getStatus(Contract, tweetid).then((res) => setStatus(res));
+      (status==2 ||status==1) &&getVerdict(Contract, tweetid).then((res) =>{ setVerdict(res) ;});
     } catch (err) {
       console.log(err);
     }
-  }, [Contract, account]);
+  }, [Contract, account, status,verdict]);
 
   const handleAgree = async (event) => {
     event.preventDefault();
     await voteFor(Contract, account.currentAccount, tweetid, stake);
     alert("Voting Successful");
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
+    
   };
-  const handleParticipate= async (event) => {
+  const handleParticipate = async (event) => {
     event.preventDefault();
-    try{
+    try {
       await participate(Contract, account.currentAccount, tweetid);
       alert("Participated Successfully! Add your Stake");
-    }catch(err){
-      alert("Voting Session Ended")
+      setTimeout(() => {
+        window.location.reload(false);
+      }, 1000);
+    } catch (err) {
+      alert("Voting Session Ended");
     }
-    
-    
   };
   const handleDisAgree = async (event) => {
     event.preventDefault();
-    await voteAgainst(Contract, account.cuurentAccount, tweetid, stake);
+    await voteAgainst(Contract, account.currentAccount, tweetid, stake);
     alert("Voting Successful");
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
   };
   const handleStake = (e) => {
-    setStake(() => ([e.target.name] = e.target.value));
+    setStake(
+      () => ([e.target.name] = Web3.utils.toWei(e.target.value, "ether"))
+    );
   };
   const getTweet = async () => {
     try {
@@ -111,43 +126,58 @@ function TweetVote() {
 
             <form className="space-y-6" action="#">
               <TweetDecision tweetid={tweetid} />
-              {participant.filter(
-                (address) =>
-                  address.toLowerCase() === account.currentAccount.toLowerCase()
-              ).length >= 1 ? (
+              {status == 0  ? (
                 <>
-                  <div>
-                    <input
-                      type="price"
-                      name="stake"
-                      id="price"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                      placeholder="Stake Amount"
-                      required=""
-                      onChange={handleStake}
-                    />
-                  </div>
-                  <div className="flex flex-row justify-center align-center">
+                  {participant.filter(
+                    (address) =>
+                      address.toLowerCase() ===
+                      account.currentAccount.toLowerCase()
+                  ).length >= 1 ? (
+                    <>
+                      <div>
+                        <input
+                          type="price"
+                          name="stake"
+                          id="price"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                          placeholder="Stake Amount"
+                          required=""
+                          onChange={handleStake}
+                        />
+                      </div>
+                      <div className="flex flex-row justify-center align-center">
+                        <button
+                          type="submit"
+                          className="w-full mr-2 text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                          onClick={handleAgree}
+                        >
+                          Agree
+                        </button>
+                        <button
+                          type="submit"
+                          className="w-full ml-2 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                          onClick={handleDisAgree}
+                        >
+                          Disagree
+                        </button>
+                      </div>
+                    </>
+                  ) : (
                     <button
-                      type="submit"
-                      className="w-full mr-2 text-white bg-green-500 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      onClick={handleAgree}
+                      class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+                      onClick={handleParticipate}
                     >
-                      Agree
+                      Participate
                     </button>
-                    <button
-                      type="submit"
-                      className="w-full ml-2 text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      onClick={handleDisAgree}
-                    >
-                      Diagree
-                    </button>
-                  </div>
+                  )}
                 </>
               ) : (
-                <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded" onClick={handleParticipate}>
-                  Participate
-                </button>
+                <>
+                Voting Ended
+                <div>
+                  This is news is Voted to be {verdict?(<>True</>):(<>Fake</>)}
+                </div>
+                </>
               )}
             </form>
           </div>
@@ -223,6 +253,7 @@ function Timer({ time }) {
 
 function Participants(props) {
   const { participants } = props;
+
   return (
     <>
       <div
@@ -237,8 +268,7 @@ function Participants(props) {
         <div class="flow-root">
           <div class="divide-y overflow-auto divide-gray-200 dark:divide-gray-700">
             {participants.map((res) => {
-              console.log(res);
-              return <Person />;
+              return <Person address={res} />;
             })}
             {/* <Person />
             <Person />
@@ -255,16 +285,48 @@ function Participants(props) {
 }
 
 function Person(props) {
+  const { address } = props;
+  const { tweetid } = useParams();
+  const [stake, setStake] = useState();
+  const [status, setStatus] = useState("");
+  const [vote, setVote] = useState(false);
+  //console.log(tweetid);
+  const { Contract } = useContext(Web3Context);
+  useEffect(() => {
+    try {
+      getParticipantsStake(Contract, tweetid, address).then((res) =>
+        setStake(res)
+      );
+      getStatus(Contract, tweetid, address).then((res) => setStatus(res));
+      getParticipantsVote(Contract, tweetid, address).then((res) =>
+        setVote(res)
+      );
+      //console.log(vote);
+    } catch (err) {
+      console.log(err);
+    }
+  }, [address, status]);
+
   return (
     <div class="py-3 sm:py-4">
       <div class="flex items-center space-x-4">
         <div class="flex-shrink-0"></div>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-white truncate">Neil Sims</p>
+          <p class="text-sm font-medium text-white truncate">
+            {" "}
+            {`${String(address).slice(0, 5)}...${String(address).slice(
+              String(address).length - 5
+            )}`}
+          </p>
         </div>
         <div class="inline-flex items-center text-base font-semibold text-white">
-          320 ETH
+          {stake && Web3.utils.fromWei(String(stake), "ether")} ETH
         </div>
+        {(status == 2 || status == 1) && (
+          <div class="inline-flex items-center text-base font-semibold text-white">
+            {vote ? <>For</> : <>Against</>}
+          </div>
+        )}
       </div>
     </div>
   );

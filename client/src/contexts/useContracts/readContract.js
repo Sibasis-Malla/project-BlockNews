@@ -54,11 +54,11 @@
     return res;
   };
 
-  const getVerdict = async (contract, id, address) => {
+  const getVerdict = async (contract, id) => {
     if (!contract) {
         return false;
       }
-    const res = await contract.methods.getParticipantsVote(id, address).call();
+    const res = await contract.methods.getVerdict(id).call();
     return res;
   };
   const getTime = async(contract,id)=> {

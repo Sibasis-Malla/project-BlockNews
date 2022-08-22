@@ -81,6 +81,7 @@ contract FakeNewsApp{
         participant memory newPart = participant(msg.sender,false,false,0);
          Participants[_id][msg.sender] = newPart;
              DisplayArticleList[_id].totalParticipants++;
+                articleList[_id].participants.push(msg.sender);
     }
     function voteFor(uint256 _id,uint256 stake) payable public{
        require(msg.value==stake);
@@ -90,7 +91,7 @@ contract FakeNewsApp{
        Participants[_id][msg.sender].staked +=stake; 
        Participants[_id][msg.sender].hasVoted = true ; 
 
-       articleList[_id].participants.push(msg.sender);
+    
        articleList[_id]._for++ ;
        articleList[_id].forStake += stake;
 
@@ -107,7 +108,6 @@ contract FakeNewsApp{
        Participants[_id][msg.sender].staked +=stake; 
        Participants[_id][msg.sender].hasVoted = true ;
 
-       articleList[_id].participants.push(msg.sender);
        articleList[_id].against++ ;
        articleList[_id].againstStake += stake;
 

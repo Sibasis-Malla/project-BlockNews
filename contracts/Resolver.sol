@@ -25,14 +25,14 @@ contract Resolver  {
        uint256[] memory ans =  IFakeNewsAPP(contract_add ).getArticles();
        
        for(uint256 i=0;i<ans.length;i++){
-           if(block.timestamp-IFakeNewsAPP(contract_add).getTime(ans[i])>=300 && IFakeNewsAPP(contract_add).getCurrentStatus(ans[i])==0  ){
+           if(block.timestamp-IFakeNewsAPP(contract_add).getTime(ans[i])>=900 && IFakeNewsAPP(contract_add).getCurrentStatus(ans[i])==0  ){
                 execPayload = abi.encodeWithSelector(
                 IFakeNewsAPP.calculateResult.selector,
                 uint256(ans[i])
             );
             return (true, execPayload);
            }
-         if(block.timestamp-IFakeNewsAPP(contract_add).getTime(ans[i])<300){
+         if(block.timestamp-IFakeNewsAPP(contract_add).getTime(ans[i])<900){
                return(false,bytes("Session is ongoing"));
            }
 
