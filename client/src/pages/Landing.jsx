@@ -5,7 +5,7 @@ import WideCardsMod from '../components/Cards/WideCardsMod';
 import Web3Context from '../contexts';
 import axios from 'axios';
 import { articlesData } from '../contexts/useContracts/readContract';
-import { intializeArticle } from '../contexts/useContracts/writeContract';
+import { intializeArticle} from '../contexts/useContracts/writeContract';
 
 const LandingPage = () => {
   const [articles, setarticles] = useState([]);
@@ -14,7 +14,7 @@ const LandingPage = () => {
 
   useEffect(() => {
     ApprovedRooms();
-    console.log(articles);
+    //console.log(articles);
     // eslint-disable-next-line
   }, [Contract]);
   const ApprovedRooms = async () => {

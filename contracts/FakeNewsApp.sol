@@ -76,6 +76,8 @@ contract FakeNewsApp{
 
     }
     function participate(uint256 _id)public{
+        require( Participants[_id][msg.sender].hasVoted == false,"You have already voted");
+        require(articleList[_id].status == ArticleStatus.CreationCompleted,"Sorry Session has ended");
         participant memory newPart = participant(msg.sender,false,false,0);
          Participants[_id][msg.sender] = newPart;
              DisplayArticleList[_id].totalParticipants++;
@@ -151,13 +153,16 @@ contract FakeNewsApp{
           }
        }
         articleList[_id].status = ArticleStatus.DistributionCompleted;
+        DisplayArticleList[_id].status = ArticleStatus.DistributionCompleted;
+
+     
 
     }
 
 //VIEW FUNCTIONS
-function getTime(uint256 id)external view returns(uint256){
+    function getTime(uint256 id)external view returns(uint256){
     return articleList[id].time_created;
-}
+    }
     function getArticles() external view returns (uint256 [] memory ){
         return totalArticles;
     }
@@ -168,11 +173,11 @@ function getTime(uint256 id)external view returns(uint256){
         return(Participants[id][_add].staked);
     }
         function getParticipantsVote (uint256 id,address _add) external view returns(bool){
-        require(articleList[id].status==ArticleStatus.ResultCalculated,"Session not Completed");
+        require(articleList[id].status!=ArticleStatus.CreationCompleted,"Session not Completed");
         return (Participants[id][_add].vote);
     }
         function getVerdict(uint256 id) external view returns (bool){
-             require( articleList[id].status == ArticleStatus.ResultCalculated,"Session not Completed");
+             require( articleList[id].status != ArticleStatus.CreationCompleted,"Session not Completed");
              return(articleList[id].verdict);
     }
         function getCurrentStatus(uint256 id) external view returns (uint8 stat){

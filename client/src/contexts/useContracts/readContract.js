@@ -24,7 +24,7 @@
 
   const getRoomParticipants = async (contract, id) => {
     if (!contract) {
-        return false;
+        return [];
       }
     const res = await contract.methods.getParticipants(id).call();
     return res;
