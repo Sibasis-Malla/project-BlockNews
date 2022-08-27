@@ -94,7 +94,7 @@ function TweetVote() {
   const getTweet = async () => {
     try {
       await axios
-        .get(`https://protected-dusk-02862.herokuapp.com/get/${tweetid}`)
+        .get(`https://fierce-beyond-41788.herokuapp.com//get/${tweetid}`)
         .then((res) => {
           //console.log(res.data);
           settweetData(res.data[0]);
