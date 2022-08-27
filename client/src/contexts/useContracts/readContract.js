@@ -11,8 +11,10 @@
         return false;
       }
     const articles = await contract.methods.getArticles().call();
-    return await Promise.all(articles.map(async(_id) => {
+  
+    return await Promise.all(articles.slice(1).map(async(_id) => {
       const { id, content_URI, time_created, totalParticipants, status } =
+      
         await contract.methods.DisplayArticleList(_id).call();
 
         return {
