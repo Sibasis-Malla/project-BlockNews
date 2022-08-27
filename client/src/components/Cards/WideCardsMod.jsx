@@ -10,7 +10,7 @@ const WideCards = (params) => {
  
     try {
       const response = await axios.put(
-        `https://fierce-beyond-41788.herokuapp.com//approve/${params.id}`
+        `https://fierce-beyond-41788.herokuapp.com/approve/${params.id}`
       );
       console.log(response.status, response.message);
     } catch (e) {}

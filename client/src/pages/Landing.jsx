@@ -31,7 +31,7 @@ const LandingPage = () => {
   const Fetchdata = async () => {
     try {
       await axios
-        .get('https://fierce-beyond-41788.herokuapp.com//get')
+        .get('https://fierce-beyond-41788.herokuapp.com/get')
         .then((res) => {
           console.log(res);
           const later = res.data.filter((tweet) => {
